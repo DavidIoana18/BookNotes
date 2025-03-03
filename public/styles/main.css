@@ -857,6 +857,133 @@ body::before {
     background-color: #3a434c ;
 }
 
+/* ------------ EDIT BOOK PAGE ------- */
+.editBook{
+    text-align: center;
+    color: black;
+    font-style: italic;
+    font-size: 1.7em;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-left: 20px;
+    margin-right: 30px;
+    margin-bottom: 0;
+}
+
+.highlight{
+    text-align: center;
+    color: #5C7285;
+    font-style: italic;
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.edit-title-cover{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cover{
+    margin-top: 20px;
+    margin-left: 30px;
+}
+
+.cover img{
+   width: 180px; 
+   height: 250px;
+   border-radius: 5px;
+}
+
+.rating-stars{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.rating-edit{
+    justify-content: flex-end;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    font-size: 20px;
+}
+
+.edit-book-container {
+    margin-top: 20px;
+    min-width: 700px;
+    min-height: 520px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.edit-book-container label {
+    display: block;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-left: 15px;
+    margin-bottom: 0;
+    font-size: 1.3em;
+}
+
+#review{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.edit-book-container textarea {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: 5px;
+}
+
+.edit-book-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+    margin-right: 10px;
+    gap: 20px;
+
+}
+
+.edit-book-buttons button {
+    padding: 7px 15px;
+    background-color: #5C7285;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.edit-book-buttons button:hover {
+    background-color: #3a434c;
+}
+
+.cancel-button {
+    display: inline-block;
+    padding: 7px 15px;
+    background-color: #5C7285;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 17px;
+    text-decoration: none;
+}
+.cancel-button:hover {
+    background-color: #3a434c;
+}
+
+.edit-book-form textarea {
+    resize: none; 
+    height: 80px;
+}
+
 /* ---------- FOOTER ----------- */
 .footer {
     width: 100%;
