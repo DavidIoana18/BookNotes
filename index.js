@@ -147,6 +147,31 @@ app.get("/login", (req, res) =>{
     res.render("login.ejs", { error: ""});
 });
 
+// Protected route
+app.get("/myBooks", async (req, res) =>{
+    if(req.isAuthenticated()){ //passport method to check if user is authenticated, returning true or false
+        try{
+            const result = await db.query("SELECT * FROM books WHERE user_id = $1 ORDER BY id ASC", [req.user.id]);
+            // console.log("Books: ", result.rows);
+            res.render("myBooks.ejs", {books: result.rows});
+        }catch(err){
+            console.log(err);
+        }       
+    }else{
+        res.redirect("/login");
+    }
+});
+
+app.get("/logout", (req, res) =>{
+    req.logout((err) =>{ // Passport delete the user from the session
+        if (err) return next(err);
+        req.session.destroy(() =>{ // Delete the current session from the server
+            console.log("Logged out user");
+            res.redirect("/");
+        });
+    });
+});
+
 // Register using email and password, where password is encrypted using bcrypt
 app.post("/register", async(req, res) =>{
     const username = req.body.username;
