@@ -13,7 +13,7 @@
             <p class="info-genre"><strong>Genre:</strong> <%= book.genre %></p>
             
             <p class="info-rating"><strong>Rating:</strong>
-                <% for (let i = 0; i <= 4; i++) { %>
+                <% for (let i = 1; i <= 5; i++) { %>
                     <span><%= i <= book.rating ? '★' : '☆' %></span>
                 <% } %>
             </p>
@@ -26,7 +26,7 @@
 
  
     <div class="book-details-buttons">
-        <a href="/myBooks">
+        <a href="/user/books">
             <button>My Books</button>
         </a>
 

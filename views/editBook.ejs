@@ -12,7 +12,7 @@
         <div class="rating-stars">
             <label for="rating"><strong>Rating:</strong></label>
             <div class="star-rating rating-edit">
-                <% for (let i = 4; i >= 0; i--) { %>
+                <% for (let i = 5; i >= 1; i--) { %>
                     <input type="radio" name="rating" value="<%= i %>" id="star<%= i %>"
                         <%= book.rating == i ? 'checked' : '' %> required>
                     <label for="star<%= i %>">★</label>
@@ -24,7 +24,7 @@
         <textarea name="review" id="review" rows="3"><%= book.review %></textarea>
 
         <div class="edit-book-buttons">
-            <a href="/bookDetails/<%= book.id %>" class="cancel-button">Cancel</a>
+            <a href="/user/bookDetails/<%= book.id %>" class="cancel-button">Cancel</a>
             <button type="submit">Save Changes</button>
         </div>
     </form>
