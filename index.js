@@ -156,7 +156,7 @@ app.get("/addBook", (req, res) =>{
     const coverUrl = req.session.coverUrl || "/images/defaultCover.jpg";
     const messageToSend = req.session.message || "";
 
-     // Ștergem datele din sesiune după ce le folosim
+     // Delete the data from the session after using it
     //  req.session.title = null;
     //  req.session.coverUrl = null;
     //  req.session.message = null;
@@ -176,6 +176,41 @@ app.get("/myBooks", async (req, res) =>{
         }       
     }else{
         res.redirect("/login");
+    }
+});
+
+app.get("/filterBooks", async(req, res) =>{
+    // because the form that sends the request is a GET form, the data is sent in the URL( => query parameters)
+    const sortByTitle = req.query.sortByTitle || null;
+    const sortByRating = req.query.sortByRating || null;
+    const sortByGenre = req.query.sortByGenre || null;
+
+    let whereClauses=["user_id = $1"];
+    let values = [req.user.id];
+    let orderByClauses = [];
+    
+    if(sortByGenre){
+       whereClauses.push(`genre = $${values.length + 1}`); // tipically genre = $2 but if sortbyGenre is null, then $2 will never be used and the query will fail, SO i use the incrementation 
+       values.push(sortByGenre);
+    }
+    if(sortByTitle){
+        orderByClauses.push(`title ${sortByTitle}`);  // title ASC or title DESC
+    }
+    if(sortByRating){
+        orderByClauses.push(`rating ${sortByRating}`); // rating ASC or rating DESC
+    }
+    if (orderByClauses.length === 0) {
+        orderByClauses.push("id ASC");
+    }
+    let query = `SELECT * FROM books WHERE ${whereClauses.join(" AND ")} 
+                ${orderByClauses.length ? "ORDER BY " + orderByClauses.join(", ") : ""}`;
+
+    try{
+        const books = await db.query(query, values);
+        res.render("myBooks.ejs", {books: books.rows});
+    }catch(err){
+        console.log("Error sorting books: ", err);
+        res.redirect("/myBooks");
     }
 });
 
