@@ -159,6 +159,7 @@ body::before {
     margin-bottom: 30px;
     color: #333;
     font-size: 28px;
+    margin-top: 10px;
 }
 
 .input-group {
@@ -177,7 +178,7 @@ body::before {
     padding: 12px;
     border-radius: 8px;
     border: 1px solid #ccc;
-    font-size: 16px;
+    font-size: 13px;
     color: #333;
     background-color: #f9f9f9;
     transition: all 0.3s ease;
@@ -206,6 +207,14 @@ body::before {
 }
 
 /* Register Link */
+
+.group{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 35px;
+}
+
 .register-link {
     text-align: center;
     margin-top: 20px;
@@ -316,6 +325,7 @@ body::before {
 
 .login-link {
     margin-top: 20px;
+    margin-left: 40px;
 }
 
 .login-link a {
@@ -416,7 +426,7 @@ body::before {
     display: flex;
     flex-direction: column;
     text-align: center;
-    max-width: 300px;
+    width: 100%;
     margin: 80px auto;
     margin-top: 180px;
     margin-bottom: 0px;
@@ -427,7 +437,8 @@ body::before {
     color: white;             
     font-size: 32px;          
     font-style: italic;      
-    margin: 0;                 
+    margin: 0;   
+    margin-bottom: 10px;              
 }
 
 .no-books-container button {
@@ -438,7 +449,7 @@ body::before {
     font-size: 18px;           
     cursor: pointer;          
     border-radius: 5px;  
-    margin-top: 30px;      
+    margin-top: 10px;      
 }
 
 .no-books-container button:hover {
@@ -983,6 +994,7 @@ body::before {
     resize: none; 
     height: 80px;
 }
+
 
 /* ---------- FOOTER ----------- */
 .footer {

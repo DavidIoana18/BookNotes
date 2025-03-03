@@ -91,13 +91,17 @@ passport.use("google", new GoogleStrategy({
     callbackURL: process.env.GOOGLE_CALLBACK_URL,
 }, async(accessToken, refreshToken, profile, done) =>{
     console.log("Logged in user: ", profile.emails[0].value);
+    // console.log("Profile: ", profile);
     try{
         const email = profile.emails[0].value;
+        const firstName = profile.name.givenName;
+        const lastName = profile.name.familyName;
+
         const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
         if(result.rows.length === 0){ // If user is not found, create a new user
             const newUser = await db.query(
-                "INSERT into users (email, google_id, auth_method) VALUES ($1, $2, $3) RETURNING *",
-                [email, profile.id, "google"]);
+                "INSERT into users (email, first_name, last_name, google_id, auth_method) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+                [email, firstName, lastName,  profile.id, "google"]);
             done(null, newUser.rows[0]);
         }else{  // If user is found, return the user
             done(null, result.rows[0]);
@@ -170,7 +174,7 @@ app.get("/myBooks", async (req, res) =>{
         try{
             const result = await db.query("SELECT * FROM books WHERE user_id = $1 ORDER BY id ASC", [req.user.id]);
             // console.log("Books: ", result.rows);
-            res.render("myBooks.ejs", {books: result.rows});
+            res.render("myBooks.ejs", {books: result.rows, firstName:req.user.first_name});
         }catch(err){
             console.log(err);
         }       
@@ -241,7 +245,7 @@ app.get("/filterBooks", async(req, res) =>{
 
     try{
         const books = await db.query(query, values);
-        res.render("myBooks.ejs", {books: books.rows});
+        res.render("myBooks.ejs", {books: books.rows, firstName: req.user.first_name});
     }catch(err){
         console.log("Error sorting books: ", err);
         res.redirect("/myBooks");
@@ -262,6 +266,8 @@ app.get("/logout", (req, res) =>{
 app.post("/register", async(req, res) =>{
     const username = req.body.username;
     const password = req.body.password;
+    const firstName = req.body.first_name;
+    const lastName = req.body.last_name;
     try{
       const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [username]); // check if email already exists
   
@@ -275,7 +281,7 @@ app.post("/register", async(req, res) =>{
               if(err){
                   console.log("Error hashing password: ", err);
               }else{
-                 await db.query("INSERT INTO users (email, password, auth_method) VALUES ($1, $2, $3)", [username, hash, "local"]);
+                 await db.query("INSERT INTO users (email, password, first_name, last_name auth_method) VALUES ($1, $2, $3, $4, $5)", [username, hash, firstName, lastName, "local"]);
                  res.redirect("/login");
               }
           });
