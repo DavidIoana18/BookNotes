@@ -94,6 +94,7 @@ passport.use("google", new GoogleStrategy({
     // console.log("Profile: ", profile);
     try{
         const email = profile.emails[0].value;
+        if (!email) return done(null, false, { message: "No email associated with Google account." });
         const firstName = profile.name.givenName;
         const lastName = profile.name.familyName;
 
@@ -169,12 +170,12 @@ app.get("/addBook", (req, res) =>{
 });
 
 // Protected route
-app.get("/myBooks", async (req, res) =>{
+app.get("/user/books", async (req, res) =>{
     if(req.isAuthenticated()){ //passport method to check if user is authenticated, returning true or false
         try{
             const result = await db.query("SELECT * FROM books WHERE user_id = $1 ORDER BY id ASC", [req.user.id]);
             // console.log("Books: ", result.rows);
-            res.render("myBooks.ejs", {books: result.rows, firstName:req.user.first_name});
+            res.render("userBooks.ejs", {books: result.rows, firstName:req.user.first_name});
         }catch(err){
             console.log(err);
         }       
@@ -183,20 +184,20 @@ app.get("/myBooks", async (req, res) =>{
     }
 });
 
-app.get("/bookDetails/:id", async(req, res) =>{
+app.get("/user/bookDetails/:id", async(req, res) =>{
     const bookId = req.params.id;
     try{
         const result = await db.query("SELECT * FROM books WHERE id = $1", [bookId]);
         if(result.rows.length === 0){
-            return res.redirect("/myBooks");
+            return res.redirect("/user/books");
         }else{
              const book = result.rows[0];
-             res.render("bookDetails.ejs", {book: book});
+             res.render("userBookDetails.ejs", {book: book});
         }
        
     }catch(err){
         console.log("Error fetching book details: ", err);
-        res.redirect("/myBooks");
+        res.redirect("/user/books");
     }
 });
 
@@ -209,11 +210,11 @@ app.get("/editBook/:id", async(req, res) =>{
             res.render("editBook.ejs", {book: book});
         }else{
             console.log("Book not found");
-            res.redirect("/myBooks");
+            res.redirect("/user/books");
         }
     }catch(err){
         console.log("Error fetching book: ", err);
-        res.redirect("/myBooks");
+        res.redirect("/user/books");
     }
 });
 
@@ -245,14 +246,14 @@ app.get("/filterBooks", async(req, res) =>{
 
     try{
         const books = await db.query(query, values);
-        res.render("myBooks.ejs", {books: books.rows, firstName: req.user.first_name});
+        res.render("userBooks.ejs", {books: books.rows, firstName: req.user.first_name});
     }catch(err){
         console.log("Error sorting books: ", err);
-        res.redirect("/myBooks");
+        res.redirect("/user/books");
     }
 });
 
-app.get("/logout", (req, res) =>{
+app.get("/logout", (req, res, next) =>{
     req.logout((err) =>{ // Passport delete the user from the session
         if (err) return next(err);
         req.session.destroy(() =>{ // Delete the current session from the server
@@ -281,7 +282,7 @@ app.post("/register", async(req, res) =>{
               if(err){
                   console.log("Error hashing password: ", err);
               }else{
-                 await db.query("INSERT INTO users (email, password, first_name, last_name auth_method) VALUES ($1, $2, $3, $4, $5)", [username, hash, firstName, lastName, "local"]);
+                 await db.query("INSERT INTO users (email, password, first_name, last_name, auth_method) VALUES ($1, $2, $3, $4, $5)", [username, hash, firstName, lastName, "local"]);
                  res.redirect("/login");
               }
           });
@@ -306,7 +307,7 @@ app.post("/register", async(req, res) =>{
                   return next(err);
               }
               console.log("Logged in user: ", user.email);
-              return res.redirect("/myBooks");
+              return res.redirect("/user/books");
           });
    })(req, res, next);
   });
@@ -385,7 +386,7 @@ app.post("/addBook", async(req, res) =>{
                 "INSERT INTO books (user_id, title, author, cover_url, rating, review, genre) VALUES ($1, $2, $3, $4, $5, $6, $7)",
                  [req.user.id, title, author, coverUrl, rating, review, genre]
             );
-            res.redirect("/myBooks");
+            res.redirect("/user/books");
         }catch(err){
         console.log("Error adding book: ", err);
         res.redirect("/addBook");
@@ -406,10 +407,10 @@ app.post("/updateBook/:id", async(req, res) =>{
                 "UPDATE books SET rating = $1, review = $2 WHERE id = $3 AND user_id = $4",
                  [newRating, newReview, bookId, req.user.id]
             );
-            res.redirect("/myBooks");
+            res.redirect("/user/books");
         }catch(err){
             console.log("Error updating book: ", err);
-            res.redirect(`/editBook/{$bookId}`);
+            res.redirect(`/editBook/${bookId}`);
         }
     }else{
         res.redirect("/login");
@@ -424,7 +425,7 @@ app.post("/deleteBook/:id", async(req, res) =>{
                 "DELETE FROM books WHERE id = $1 AND user_id = $2",
                  [bookId, req.user.id]
             );
-            res.redirect("/myBooks");
+            res.redirect("/user/books");
         }catch(err){
             console.log("Error deleting book: ", err);
             res.redirect(`/bookDetails/${bookId}`);
