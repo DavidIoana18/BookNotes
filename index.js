@@ -179,6 +179,23 @@ app.get("/myBooks", async (req, res) =>{
     }
 });
 
+app.get("/bookDetails/:id", async(req, res) =>{
+    const bookId = req.params.id;
+    try{
+        const result = await db.query("SELECT * FROM books WHERE id = $1", [bookId]);
+        if(result.rows.length === 0){
+            return res.redirect("/myBooks");
+        }else{
+             const book = result.rows[0];
+             res.render("bookDetails.ejs", {book: book});
+        }
+       
+    }catch(err){
+        console.log("Error fetching book details: ", err);
+        res.redirect("/myBooks");
+    }
+});
+
 app.get("/filterBooks", async(req, res) =>{
     // because the form that sends the request is a GET form, the data is sent in the URL( => query parameters)
     const sortByTitle = req.query.sortByTitle || null;
