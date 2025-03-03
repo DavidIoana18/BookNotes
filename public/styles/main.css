@@ -1,0 +1,366 @@
+/* Body setup */
+body {
+    background-image: url('/images/loginPage.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    overflow-y: auto; 
+    padding-top: 65px;
+    padding-bottom: 65px;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3); 
+    z-index: -1; 
+}
+
+/* Navbar styling */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #3a434c;
+    padding: 10px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.navbar-container {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    margin: 0 auto;
+}
+
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.navbar-brand img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 20px; 
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+    color: #5C7285;
+}
+
+.content {
+    padding-top: 100px; 
+    text-align: center;
+}
+
+/*----------------------- HOME PAGE ------------------- */
+
+.home-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.9); 
+    padding: 20px 45px 45px 45px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+    position: relative;
+    margin-top: 185px;
+}
+
+.home-h1 {
+    font-size: 28px;
+    color: #333;
+    margin-left: 30px;
+}
+
+.home-h1 span {
+    color: #5C7285; 
+}
+
+.home-p {
+    margin: 15px 0;
+    margin-bottom: 20px;
+    margin-top: 0;
+    color: #666;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.home-btn {
+    position: absolute;
+    right: 20px;
+    bottom: 10px;
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 24px;
+    font-size: 18px;
+    color: white;
+    background: #5C7285;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.home-btn:hover {
+    background: #3a434c;
+}
+
+/* ----------------- LOGIN PAGE ----------------------*/
+/* login form */
+.login-container {
+    background-color: rgba(255, 255, 255, 0.9); 
+    padding: 10px 40px 20px 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    margin-top: 50px;
+}
+
+.reg-h2, .login-h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 28px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-weight: bold;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    color: #333;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #5C7285;
+    background-color: #e8f5e9;
+}
+
+/* Login Button */
+.btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #5C7285;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #3a434c;
+}
+
+/* Register Link */
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.register-link a {
+    color:#5C7285;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+    color: #3a434c;
+}
+
+
+/* ---------------- REGISTER PAGE ------------- */
+
+.register-container{
+ margin-top: 35px;
+}
+.register-form{
+    background-color: rgba(255, 255, 255, 0.9); 
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    padding-bottom: 20px;
+    padding-top: 10px;
+    margin-top: 20px;
+}
+
+.error-message::before,
+.error-message::after {
+    content: "";
+    flex: 1;
+    border-bottom: 3px solid #ccc; 
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 15px 0;
+    opacity: 0.6; 
+}
+.error-message span {
+    color: #5C7285; 
+}
+
+.error-message span {
+    padding: 0 10px;
+    font-weight: bold;
+    color: #666; 
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #ccc; 
+}
+
+.or-divider span {
+    padding: 0 10px;
+    font-weight: bold;
+    color: #666; 
+}
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 15px 0;
+    opacity: 0.6;
+}
+
+.google-sign-in {
+    margin-top: 20px;
+}
+
+.google-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    background-color: #5C7285;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.google-btn img {
+    width: 30px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.google-btn:hover {
+    background-color: #3a434c;
+}
+
+.login-link {
+    margin-top: 20px;
+}
+
+.login-link a {
+    color: #5C7285;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+    color: #3a434c;
+}
+
+/* ---------- FOOTER ----------- */
+.footer {
+    width: 100%;
+    background-color: #3a434c;
+    color: white;
+    padding: 8px 15px; 
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-container {
+    width: 100%;
+    max-width: 1100px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px; 
+}
+
+.footer-openlibrary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.openlibrary-logo {
+    height: 20px;
+}
+
+.footer-container p {
+    margin: 0;
+}
