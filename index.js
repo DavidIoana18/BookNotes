@@ -196,6 +196,23 @@ app.get("/bookDetails/:id", async(req, res) =>{
     }
 });
 
+app.get("/editBook/:id", async(req, res) =>{
+    const bookId = req.params.id;
+    try{
+        const result = await db.query("SELECT * FROM books WHERE id = $1", [bookId]);
+        if(result.rows.length > 0){ // If book is found
+            const book = result.rows[0];
+            res.render("editBook.ejs", {book: book});
+        }else{
+            console.log("Book not found");
+            res.redirect("/myBooks");
+        }
+    }catch(err){
+        console.log("Error fetching book: ", err);
+        res.redirect("/myBooks");
+    }
+});
+
 app.get("/filterBooks", async(req, res) =>{
     // because the form that sends the request is a GET form, the data is sent in the URL( => query parameters)
     const sortByTitle = req.query.sortByTitle || null;
@@ -370,6 +387,27 @@ app.post("/addBook", async(req, res) =>{
     }else{
         res.redirect("/login");
     }
+});
+
+app.post("/updateBook/:id", async(req, res) =>{
+    if(req.isAuthenticated()){
+        const bookId = req.params.id;
+        const newRating = req.body.rating;
+        const newReview = req.body.review;
+
+        try{
+            await db.query(
+                "UPDATE books SET rating = $1, review = $2 WHERE id = $3 AND user_id = $4",
+                 [newRating, newReview, bookId, req.user.id]
+            );
+            res.redirect("/myBooks");
+        }catch(err){
+            console.log("Error updating book: ", err);
+            res.redirect(`/editBook/{$bookId}`);
+        }
+    }else{
+        res.redirect("/login");
+    }   
 });
 
 app.listen(port, () =>{
