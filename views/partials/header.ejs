@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/main.css">
+    <title>MyBookHub</title>
+</head>
+<body>
+
+<!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <!-- Logo and app name -->
+            <div class="navbar-brand">
+                <img src="/images/logo.png" alt="Logo" class="logo">
+                <span>MyBookHub</span>
+            </div>
+    
+            <!-- Navigation menu -->
+            <nav class="navbar-links">
+   
+                <% if (userAuthenticated) { %> 
+                    <a href="/myBooks">My Books</a>
+                    <a href="/searchCover">Add Book</a>
+                    <a href="/logout">Logout</a>
+                <% } else { %>    
+                     <a href="/">Home</a>
+                    <a href="/login">Login</a>
+                    <a href="/register">Register</a>
+                <% } %>
+            </nav>
+        </div>
+    </header>
+
+    
+
