@@ -147,6 +147,23 @@ app.get("/login", (req, res) =>{
     res.render("login.ejs", { error: ""});
 });
 
+app.get("/searchCover", (req, res) =>{
+    res.render("searchCover.ejs");
+});
+
+app.get("/addBook", (req, res) =>{
+    const title = req.session.searchTitle;
+    const coverUrl = req.session.coverUrl || "/images/defaultCover.jpg";
+    const messageToSend = req.session.message || "";
+
+     // Ștergem datele din sesiune după ce le folosim
+    //  req.session.title = null;
+    //  req.session.coverUrl = null;
+    //  req.session.message = null;
+
+    res.render("addBook.ejs", {cover_url: coverUrl, message: messageToSend, searchTitle: title});
+});
+
 // Protected route
 app.get("/myBooks", async (req, res) =>{
     if(req.isAuthenticated()){ //passport method to check if user is authenticated, returning true or false
@@ -218,6 +235,90 @@ app.post("/register", async(req, res) =>{
           });
    })(req, res, next);
   });
+
+
+  app.post("/searchCover", async(req, res) =>{
+    const title = req.body.title.trim().toLowerCase();
+    let coverUrl = "";
+    let messageToSend = "";
+
+    try{
+         //encode the title to make it URL safe in case the user enters special characters,
+         // they are converted to a URL safe format
+        const response = await axios.get(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}`);
+        //console.log(response.data);
+        const book = response.data.docs[0]; // Get the first book cover
+        
+        if(book && book.cover_edition_key){
+            coverUrl = `https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-M.jpg`;
+        }else{
+            coverUrl = "/images/defaultCover.jpg";
+            messageToSend = "No book cover found";
+        }
+
+        // Save the book cover and the title in the session
+        req.session.searchTitle = title;
+        req.session.coverUrl = coverUrl;
+        req.session.message = messageToSend;
+
+        res.redirect("/addBook");
+     }catch(err){
+        console.error("Error fetching book covers:", err);
+        req.session.searchTitle = title;
+        req.session.coverUrl = "/images/defaultCover.jpg",
+        req.session.message = "Error fetching book cover";
+        res.redirect("/addBook");
+    }
+});
+
+app.post("/addBook", async(req, res) =>{
+    // Delete the data from the session after using it
+    req.session.searchTitle = null;
+    req.session.coverUrl = null;
+    req.session.message = null;
+
+    if(req.isAuthenticated()){
+        let title = req.body.title;
+        let author = req.body.author;
+        const coverUrl = req.body.cover_url;
+        const rating = req.body.rating;
+        const review = req.body.review;
+        const genre = req.body.genre;
+
+        // Capitalize the first letter of each word in the title
+        title = title.replace(/\b\w/g, char => char.toUpperCase()); // /b identify the beginning of a word, \w search the first character of the word, g means that the search is global, so it will search for all the words in the string
+        author = author.replace(/\b\w/g, char => char.toUpperCase());
+        
+        if (!coverUrl) {
+            return res.render("addBook", { 
+                message: `Please select a cover for "${title}"`,
+                cover_url: coverUrl, 
+                searchTitle: title 
+            });
+        }
+
+        if(!genre){
+            return res.render("addBook", {
+                message: `Please select a genre for "${title}"`,
+                cover_url: coverUrl,
+                searchTitle: title
+            });
+        }
+
+        try{
+            await db.query(
+                "INSERT INTO books (user_id, title, author, cover_url, rating, review, genre) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+                 [req.user.id, title, author, coverUrl, rating, review, genre]
+            );
+            res.redirect("/myBooks");
+        }catch(err){
+        console.log("Error adding book: ", err);
+        res.redirect("/addBook");
+        }
+    }else{
+        res.redirect("/login");
+    }
+});
 
 app.listen(port, () =>{
     console.log(`Server is running on port ${port}`);
