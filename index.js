@@ -410,6 +410,24 @@ app.post("/updateBook/:id", async(req, res) =>{
     }   
 });
 
+app.post("/deleteBook/:id", async(req, res) =>{
+    if(req.isAuthenticated()){
+        const bookId = req.params.id;
+        try{
+            await db.query(
+                "DELETE FROM books WHERE id = $1 AND user_id = $2",
+                 [bookId, req.user.id]
+            );
+            res.redirect("/myBooks");
+        }catch(err){
+            console.log("Error deleting book: ", err);
+            res.redirect(`/bookDetails/${bookId}`);
+        }
+    }else{
+        res.redirect("/login");
+    }
+});
+
 app.listen(port, () =>{
     console.log(`Server is running on port ${port}`);
 });
