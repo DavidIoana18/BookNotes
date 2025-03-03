@@ -1,0 +1,43 @@
+<%- include('partials/header') %>
+
+<h1 class="bookDetails-h1">Book Details</h1>
+<div class="book-details">
+    <div class="book-cover-info">
+        <div class="book-cover">
+            <img src="<%= book.cover_url %>" alt="Book Cover" />
+        </div>
+
+        <div class="book-info">
+            <p class="info-title"><%= book.title %></p>
+            <p class="info-author">By <%= book.author %></p> 
+            <p class="info-genre"><strong>Genre:</strong> <%= book.genre %></p>
+            
+            <p class="info-rating"><strong>Rating:</strong>
+                <% for (let i = 0; i <= 4; i++) { %>
+                    <span><%= i <= book.rating ? '★' : '☆' %></span>
+                <% } %>
+            </p>
+        </div>
+    </div>
+
+    <div class="book-review">
+        <p><strong>Review:</strong> <%= book.review %></p>
+    </div>
+
+ 
+    <div class="book-details-buttons">
+        <a href="/myBooks">
+            <button>My Books</button>
+        </a>
+
+        <a href="/editBook/<%= book.id %>">
+            <button>Edit</button>
+        </a>
+
+        <form action="/deleteBook/<%= book.id %>" method="POST">
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
