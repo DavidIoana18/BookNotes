@@ -1,0 +1,89 @@
+<%- include('partials/header') %>
+
+<div class="profile-container">
+    <h1>My Profile</h1>
+
+    <div class="profile-details">
+        <div class="user-info">
+            <p><strong> <%= user.first_name %> <%= user.last_name %></strong></p>
+            <p><strong> <%= user.email %></strong></p>   
+            <form action="/user/deleteAccount" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?')">
+                <button type="submit">Delete Account</button>
+            </form>
+         </div> 
+
+        <div class="followers-books-details">
+            <p><strong ><%= booksReadCount %></strong><span class="smaller-text"> Books Read</span> </p>
+            <p><strong><%= followersCount %></strong>
+                <span class="clickable-text smaller-text" onclick="showFollowers()">Followers</span>
+             </p>
+
+             <p><strong ><%= followedCount %></strong>
+                <span class="clickable-text smaller-text" onclick="showFollowing()">Following</span>
+             </p>
+
+        </div>
+    </div>
+
+    <div id="followersModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('followers')">&times;</span>
+            <h3>Followers</h3>
+            <ul>
+                <% followers.forEach(follower => { %>
+                    <a href ="/follower/books/<%= follower.id %>">
+                        <div class="follower-item">
+                            <%= follower.first_name %> <%= follower.last_name %>
+                        </div>
+                    </a>
+                <% }) %>
+            </ul>
+        </div>
+    </div>
+
+    <div id="followingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('following')">&times;</span>
+            <h3> Following</h3>
+            <ul>
+                <% followed.forEach(followed => { %>
+                    <a href ="/follower/books/<%= followed.id %>">
+                        <div class="following-item">
+                            <%= followed.first_name %> <%= followed.last_name %>
+                        </div>
+                    </a>
+                <% }) %>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+   function showFollowers(){
+        const followersModal = document.getElementById('followersModal');
+        followersModal.style.display = "flex";
+   }
+
+   function showFollowing(){
+        const followingModal = document.getElementById('followingModal');
+        followingModal.style.display = "flex";
+   }
+
+   function closeModal(type){
+        const modal = document.getElementById(type + "Modal");
+        modal.style.display = "none";
+   }
+
+   window.onclick = function(event){
+        const modalFollowers = document.getElementById("followersModal");
+        const modalFollowing = document.getElementById("followingModal");   
+        if(event.target == modalFollowers){
+            modalFollowers.style.display = "none";
+        }else if(event.target == modalFollowing){
+            modalFollowing.style.display = "none";
+        }
+   }
+
+</script>
+
+<%- include('partials/footer') %>

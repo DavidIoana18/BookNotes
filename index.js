@@ -152,6 +152,40 @@ app.get("/login", (req, res) =>{
     res.render("login.ejs", { error: ""});
 });
 
+app.get("/user/profile", async(req, res) =>{
+    if(req.isAuthenticated()){
+        try{
+            const userDetails = await db.query("SELECT first_name, last_name, email FROM users WHERE id = $1", [req.user.id]);
+            // Count the number of books read
+            const booksReadNumber = await db.query("SELECT COUNT(*) FROM books WHERE user_id = $1", [req.user.id]);
+            // Count the number of followers
+            const followersNumber = await db.query("SELECT COUNT(*) FROM followers WHERE followed_id = $1",[req.user.id]); 
+            // console.log("Followers: ", followersNumber);
+            // Count the number of users the user is following
+            const followedNumber = await db.query("SELECT COUNT(*) FROM followers WHERE follower_id = $1", [req.user.id]);
+            // Get the list of followers
+            const followersList = await db.query("SELECT u.id, u.first_name, u.last_name FROM users u JOIN followers f ON u.id = f.follower_id WHERE followed_id = $1", [req.user.id]);
+            // Get the list of users the user is following
+            const followedList = await db.query("SELECT u.id, u.first_name, u.last_name FROM users u INNER JOIN followers f ON u.id = f.followed_id WHERE f.follower_id = $1", [req.user.id]);
+
+            res.render("profile.ejs", {
+                user: userDetails.rows[0],
+                booksReadCount: booksReadNumber.rows[0].count,
+                followersCount: followersNumber.rows[0].count,
+                followedCount: followedNumber.rows[0].count,
+                followers: followersList.rows,
+                followed: followedList.rows
+            });
+
+        }catch(err){
+            console.log("ERROR fetching user details: ", err);
+            res.redirect("/login");
+        }
+    }else{
+        res.redirect("/login");
+    }
+});
+
 app.get("/user/searchBookCover", (req, res) =>{
     res.render("searchCover.ejs");
 });
@@ -453,6 +487,33 @@ app.post("/user/deleteBook/:id", async(req, res) =>{
         res.redirect("/login");
     }
 });
+
+app.post("/user/deleteAccount", (req, res) => {
+    if (req.isAuthenticated()) {
+        const userId = req.user.id;
+
+        // Distroy the session before deleting the account
+        req.logout( async (err) => {
+            if (err) {
+                console.log("Error during logout: ", err);
+                return res.redirect("/user/profile"); 
+            }
+
+            // After logout is successful, delete the user account
+            try{
+                await db.query("DELETE FROM users WHERE id = $1", [userId])
+                console.log("User account deleted");
+                res.redirect("/"); // Redirecționăm utilizatorul la pagina principală sau la login
+            }catch(err){
+                console.log("Error deleting account: ", err);
+                res.redirect("/user/profile");
+            }       
+        });
+    } else {
+        res.redirect("/login"); // Dacă utilizatorul nu este autentificat, îl redirecționăm la login
+    }
+});
+
 
 app.listen(port, () =>{
     console.log(`Server is running on port ${port}`);
