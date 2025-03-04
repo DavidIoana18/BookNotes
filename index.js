@@ -186,6 +186,20 @@ app.get("/user/profile", async(req, res) =>{
     }
 });
 
+app.get("/follower/books/:id", async(req, res) =>{
+    const userId = req.params.id;
+    try{
+        const books = await db.query("SELECT * FROM books WHERE user_id = $1", [userId]);
+        const user = await db.query("SELECT * FROM users WHERE id = $1", [userId]);
+
+        res.render("followerBooks.ejs", {books: books.rows, user: user.rows[0]});
+        
+    }catch(err){
+        console.log("Error fetching follower books: ", err);
+        res.redirect("/user/profile");
+    }
+});
+
 app.get("/user/searchBookCover", (req, res) =>{
     res.render("searchCover.ejs");
 });
