@@ -8,9 +8,9 @@
         </div>
     </div>
     
-    <form action="/updateBook/<%= book.id %>" method="POST" class="edit-book-form">
+    <form action="/user/updateBook/<%= book.id %>" method="POST" class="edit-book-form">
         <div class="rating-stars">
-            <label for="rating"><strong>Rating:</strong></label>
+            <label for="star5"><strong>Rating:</strong></label>
             <div class="star-rating rating-edit">
                 <% for (let i = 5; i >= 1; i--) { %>
                     <input type="radio" name="rating" value="<%= i %>" id="star<%= i %>"

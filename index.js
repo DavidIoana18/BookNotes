@@ -143,8 +143,8 @@ app.get("/auth/google", passport.authenticate("google",{
 }));
 
 // The callback for Google after the user logs in
-app.get("/auth/google/myBooks", passport.authenticate("google",{
-    successRedirect: "/myBooks",
+app.get("/auth/google/user/books", passport.authenticate("google",{
+    successRedirect: "/user/books",
     failureRedirect: "/login",
 }));
 
@@ -152,11 +152,11 @@ app.get("/login", (req, res) =>{
     res.render("login.ejs", { error: ""});
 });
 
-app.get("/searchCover", (req, res) =>{
+app.get("/user/searchBookCover", (req, res) =>{
     res.render("searchCover.ejs");
 });
 
-app.get("/addBook", (req, res) =>{
+app.get("/user/addBook", (req, res) =>{
     const title = req.session.searchTitle;
     const coverUrl = req.session.coverUrl || "/images/defaultCover.jpg";
     const messageToSend = req.session.message || "";
@@ -201,7 +201,7 @@ app.get("/user/bookDetails/:id", async(req, res) =>{
     }
 });
 
-app.get("/editBook/:id", async(req, res) =>{
+app.get("/user/editBook/:id", async(req, res) =>{
     const bookId = req.params.id;
     try{
         const result = await db.query("SELECT * FROM books WHERE id = $1", [bookId]);
@@ -223,9 +223,11 @@ app.get("/filterBooks", async(req, res) =>{
     const sortByTitle = req.query.sortByTitle || null;
     const sortByRating = req.query.sortByRating || null;
     const sortByGenre = req.query.sortByGenre || null;
+    const userId = req.query.userId || req.user.id; // if userId is provided that means that the filter is for the follower books, otherwise it is for the user books
 
     let whereClauses=["user_id = $1"];
-    let values = [req.user.id];
+    let values = [userId];
+    console.log("filteruserid: ", req.user.id)
     let orderByClauses = [];
     
     if(sortByGenre){
@@ -313,7 +315,7 @@ app.post("/register", async(req, res) =>{
   });
 
 
-  app.post("/searchCover", async(req, res) =>{
+  app.post("/user/searchBookCover", async(req, res) =>{
     const title = req.body.title.trim().toLowerCase();
     let coverUrl = "";
     let messageToSend = "";
@@ -337,17 +339,17 @@ app.post("/register", async(req, res) =>{
         req.session.coverUrl = coverUrl;
         req.session.message = messageToSend;
 
-        res.redirect("/addBook");
+        res.redirect("/user/addBook");
      }catch(err){
         console.error("Error fetching book covers:", err);
         req.session.searchTitle = title;
         req.session.coverUrl = "/images/defaultCover.jpg",
         req.session.message = "Error fetching book cover";
-        res.redirect("/addBook");
+        res.redirect("/user/addBook");
     }
 });
 
-app.post("/addBook", async(req, res) =>{
+app.post("/user/addBook", async(req, res) =>{
     // Delete the data from the session after using it
     req.session.searchTitle = null;
     req.session.coverUrl = null;
@@ -366,7 +368,7 @@ app.post("/addBook", async(req, res) =>{
         author = author.replace(/\b\w/g, char => char.toUpperCase());
         
         if (!coverUrl) {
-            return res.render("addBook", { 
+            return res.render("addBook.ejs", { 
                 message: `Please select a cover for "${title}"`,
                 cover_url: coverUrl, 
                 searchTitle: title 
@@ -374,7 +376,7 @@ app.post("/addBook", async(req, res) =>{
         }
 
         if(!genre){
-            return res.render("addBook", {
+            return res.render("addBook.ejs", {
                 message: `Please select a genre for "${title}"`,
                 cover_url: coverUrl,
                 searchTitle: title
@@ -389,14 +391,14 @@ app.post("/addBook", async(req, res) =>{
             res.redirect("/user/books");
         }catch(err){
         console.log("Error adding book: ", err);
-        res.redirect("/addBook");
+        res.redirect("/user/addBook");
         }
     }else{
         res.redirect("/login");
     }
 });
 
-app.post("/updateBook/:id", async(req, res) =>{
+app.post("/user/updateBook/:id", async(req, res) =>{
     if(req.isAuthenticated()){
         const bookId = req.params.id;
         const newRating = req.body.rating;
@@ -410,14 +412,14 @@ app.post("/updateBook/:id", async(req, res) =>{
             res.redirect("/user/books");
         }catch(err){
             console.log("Error updating book: ", err);
-            res.redirect(`/editBook/${bookId}`);
+            res.redirect(`/user/editBook/${bookId}`);
         }
     }else{
         res.redirect("/login");
     }   
 });
 
-app.post("/deleteBook/:id", async(req, res) =>{
+app.post("/user/deleteBook/:id", async(req, res) =>{
     if(req.isAuthenticated()){
         const bookId = req.params.id;
         try{
@@ -428,7 +430,7 @@ app.post("/deleteBook/:id", async(req, res) =>{
             res.redirect("/user/books");
         }catch(err){
             console.log("Error deleting book: ", err);
-            res.redirect(`/bookDetails/${bookId}`);
+            res.redirect(`/user/bookDetails/${bookId}`);
         }
     }else{
         res.redirect("/login");

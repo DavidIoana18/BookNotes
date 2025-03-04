@@ -7,21 +7,21 @@
     <div class="books">
     <form action ="/filterBooks" method="GET" class="filter-form">
         <label for="sortByTitle">Title:</label>
-        <select name="sortByTitle" class="titleSort">
+        <select name="sortByTitle" id="sortByTitle" class="titleSort">
             <option value="">Select</option>
             <option value="ASC">A-Z</option>
             <option value="DESC">Z-A</option>
         </select>
 
         <label for="sortByRating">Rating:</label>
-         <select name="sortByRating" class="ratingSort">
+         <select name="sortByRating" id="sortByRating" class="ratingSort">
             <option value="">Select</option>
             <option value="ASC">Low to High</option>
             <option value="DESC">High to Low</option>
         </select>
 
         <label for="sortByGenre">Genre:</label>
-        <select name="sortByGenre" class="genreSort">
+        <select name="sortByGenre" id="sortByGenre" class="genreSort">
             <option value="">Select</option>
             <optgroup label="Arts">
                 <option value="Architecture">Architecture</option>
@@ -179,7 +179,7 @@
     <div class="no-books-container">
         <p>Hello, <%=firstName %></p>
         <p> It looks like you haven't added any books yet.</p>
-        <a href="/searchCover">
+        <a href="/user/searchBookCover">
             <button>Let's Go</button>
         </a>
     </div>
@@ -208,7 +208,7 @@
 
     // Reset the filters
     function resetFilters() {
-        window.location.href = "/myBooks";  // Redirect to the same page
+        window.location.href = "/user/books";  // Redirect to the same page
     }
     </script>
 

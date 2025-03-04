@@ -30,11 +30,11 @@
             <button>My Books</button>
         </a>
 
-        <a href="/editBook/<%= book.id %>">
+        <a href="/user/editBook/<%= book.id %>">
             <button>Edit</button>
         </a>
 
-        <form action="/deleteBook/<%= book.id %>" method="POST">
+        <form action="/user/deleteBook/<%= book.id %>" method="POST">
             <button type="submit">Delete</button>
         </form>
     </div>

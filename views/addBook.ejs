@@ -9,7 +9,7 @@
 
     <div class="bookDetails">
         
-        <form action="/addBook" method="POST" class="add-book-form">
+        <form action="/user/addBook" method="POST" class="add-book-form">
             <input type="hidden" name="title" value="<%= searchTitle %>">
 
             <% if (cover_url && cover_url !== "/images/defaultCover.jpg") { %>
@@ -175,7 +175,7 @@
                 </div>
  
                 <div class="rating">
-                    <label>Rating:</label>
+                    <label for="star5">Rating:</label>
                     <div class="star-rating">
                         <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
                         <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
