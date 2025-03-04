@@ -227,31 +227,48 @@ app.get("/filterBooks", async(req, res) =>{
 
     let whereClauses=["user_id = $1"];
     let values = [userId];
-    console.log("filteruserid: ", req.user.id)
     let orderByClauses = [];
     
+    // If sort by genre is provided
     if(sortByGenre){
        whereClauses.push(`genre = $${values.length + 1}`); // tipically genre = $2 but if sortbyGenre is null, then $2 will never be used and the query will fail, SO i use the incrementation 
        values.push(sortByGenre);
     }
+
+    // If sort by title is requested
     if(sortByTitle){
         orderByClauses.push(`title ${sortByTitle}`);  // title ASC or title DESC
     }
+
+    // If sort by rating is requested
     if(sortByRating){
         orderByClauses.push(`rating ${sortByRating}`); // rating ASC or rating DESC
     }
+
+    // Default sorting if no sort option is provided
     if (orderByClauses.length === 0) {
         orderByClauses.push("id ASC");
     }
+
     let query = `SELECT * FROM books WHERE ${whereClauses.join(" AND ")} 
                 ${orderByClauses.length ? "ORDER BY " + orderByClauses.join(", ") : ""}`;
 
     try{
         const books = await db.query(query, values);
-        res.render("userBooks.ejs", {books: books.rows, firstName: req.user.first_name});
+        const user = await db.query("SELECT * FROM users WHERE id = $1", [userId]);
+
+        if(req.query.userId){
+            res.render("followerBooks.ejs", {books: books.rows, user: user.rows[0]});
+        }else{
+            res.render("userBooks.ejs", {books: books.rows, firstName: req.user.first_name});
+        }
     }catch(err){
         console.log("Error sorting books: ", err);
-        res.redirect("/user/books");
+        if(req.query.userId){
+            res.redirect(`/follower/books/:${userId}`);
+        }else{
+            res.redirect("/user/books");
+        }
     }
 });
 
