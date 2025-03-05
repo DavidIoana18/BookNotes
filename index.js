@@ -188,11 +188,22 @@ app.get("/user/profile", async(req, res) =>{
 
 app.get("/follower/books/:id", async(req, res) =>{
     const userId = req.params.id;
+    let genresReadByUser = [];
+
     try{
         const books = await db.query("SELECT * FROM books WHERE user_id = $1", [userId]);
         const user = await db.query("SELECT * FROM users WHERE id = $1", [userId]);
+        
+        const userGenresResult = await db.query("SELECT DISTINCT genre FROM books WHERE user_id = $1", [userId]);
+        userGenresResult.rows.forEach(row =>{
+            genresReadByUser.push(row.genre);
+        });
 
-        res.render("followerBooks.ejs", {books: books.rows, user: user.rows[0]});
+        res.render("followerBooks.ejs", {
+            books: books.rows, 
+            user: user.rows[0],
+            booksGenres: genresReadByUser
+        });
         
     }catch(err){
         console.log("Error fetching follower books: ", err);
@@ -237,12 +248,21 @@ app.get("/user/addBook", (req, res) =>{
 // Protected route
 app.get("/user/books", async (req, res) =>{
     if(req.isAuthenticated()){ //passport method to check if user is authenticated, returning true or false
+        let genresReadByUser = [];
         try{
             const result = await db.query("SELECT * FROM books WHERE user_id = $1 ORDER BY id ASC", [req.user.id]);
             // console.log("Books: ", result.rows);
-            res.render("userBooks.ejs", {books: result.rows, firstName:req.user.first_name});
+            const userGenresResult = await db.query("SELECT DISTINCT genre FROM books WHERE user_id = $1", [req.user.id]);
+            userGenresResult.rows.forEach(row =>{
+            genresReadByUser.push(row.genre);
+        });
+            res.render("userBooks.ejs", {
+                books: result.rows, 
+                firstName:req.user.first_name,
+                booksGenres: genresReadByUser
+            });
         }catch(err){
-            console.log(err);
+            console.log("Error fetching user books: ", err);
         }       
     }else{
         res.redirect("/login");
@@ -293,12 +313,13 @@ app.get("/filterBooks", async(req, res) =>{
     let whereClauses=["user_id = $1"];
     let values = [userId];
     let orderByClauses = [];
+    let genresReadByUser = [];
     
     // If sort by genre is provided
     if(sortByGenre){
-       whereClauses.push(`genre = $${values.length + 1}`); // tipically genre = $2 but if sortbyGenre is null, then $2 will never be used and the query will fail, SO i use the incrementation 
-       values.push(sortByGenre);
-    }
+        whereClauses.push(`genre = $${values.length + 1}`); // tipically genre = $2 but if sortbyGenre is null, then $2 will never be used and the query will fail, SO i use the incrementation 
+        values.push(sortByGenre);
+     }
 
     // If sort by title is requested
     if(sortByTitle){
@@ -321,11 +342,24 @@ app.get("/filterBooks", async(req, res) =>{
     try{
         const books = await db.query(query, values);
         const user = await db.query("SELECT * FROM users WHERE id = $1", [userId]);
+    
+        const userGenresResult = await db.query("SELECT DISTINCT genre FROM books WHERE user_id = $1", [userId]);
+        userGenresResult.rows.forEach(row =>{
+            genresReadByUser.push(row.genre);
+        });
 
         if(req.query.userId){
-            res.render("followerBooks.ejs", {books: books.rows, user: user.rows[0]});
+            res.render("followerBooks.ejs", 
+                {books: books.rows, 
+                user: user.rows[0],
+                booksGenres: genresReadByUser
+            });
         }else{
-            res.render("userBooks.ejs", {books: books.rows, firstName: req.user.first_name});
+            res.render("userBooks.ejs", {
+                books: books.rows, 
+                firstName: req.user.first_name,
+                booksGenres: genresReadByUser
+            });
         }
     }catch(err){
         console.log("Error sorting books: ", err);
@@ -353,6 +387,7 @@ app.post("/register", async(req, res) =>{
     const password = req.body.password;
     const firstName = req.body.first_name;
     const lastName = req.body.last_name;
+   
     try{
       const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [username]); // check if email already exists
   
