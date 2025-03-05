@@ -275,11 +275,30 @@ app.get("/user/bookDetails/:id", async(req, res) =>{
         const result = await db.query("SELECT * FROM books WHERE id = $1", [bookId]);
         if(result.rows.length === 0){
             return res.redirect("/user/books");
-        }else{
-             const book = result.rows[0];
-             res.render("userBookDetails.ejs", {book: book});
         }
-       
+
+        const book = result.rows[0];
+        
+        // Adds a boolean column `followed` to the result, which is true if the logged in user follows the other user, otherwise false. 
+        // Left joins the `followers` table with alias `f` to check if the logged in user follows the other user.
+        // I use the LEFT JOIN because I want to include all the users who read the book, even if the logged in user does not follow them.
+        // Filters the results to include only users who have readed a book with the specified title and are not the logged in user.
+        const usersResult = await db.query(`
+            SELECT u.id, u.first_name, u.last_name, 
+                   CASE WHEN f.follower_id IS NOT NULL THEN true ELSE false END AS followed 
+            FROM users u
+            JOIN books b ON u.id = b.user_id 
+            LEFT JOIN followers f ON f.followed_id = u.id AND f.follower_id = $2
+            WHERE b.title = $1 AND u.id != $2`,
+            [book.title, req.user.id]);
+
+        const usersWhoRead = usersResult.rows;
+      
+        res.render("userBookDetails.ejs", {
+            book: book,
+            usersWhoRead: usersWhoRead,
+            currentUserId: req.user.id        
+        });      
     }catch(err){
         console.log("Error fetching book details: ", err);
         res.redirect("/user/books");
@@ -301,6 +320,30 @@ app.get("/user/editBook/:id", async(req, res) =>{
         console.log("Error fetching book: ", err);
         res.redirect("/user/books");
     }
+});
+
+app.post("/user/follow", async(req, res) =>{
+    const followerId = req.body.follower_id;
+    const followedId = req.body.followed_id;
+    const bookId = req.body.book_id;
+
+    try{
+        const checkFollow = await db.query(
+        "SELECT * FROM followers WHERE follower_id = $1 AND followed_id = $2",
+         [followerId, followedId]
+        );
+        
+        if (checkFollow.rows.length > 0){ // If the logged in user is already following the other user -> unfollow button in EJS
+            await db.query("DELETE FROM followers WHERE follower_id = $1 AND followed_id = $2", [followerId, followedId]);
+        }else{ // If the logged in user is not following the other user -> follow button in EJS
+            await db.query("INSERT INTO followers (follower_id, followed_id) VALUES ($1, $2)", [followerId, followedId]);
+        }
+        res.redirect(`/user/bookDetails/${bookId}`);
+    }catch(err){
+        console.log("Error following/unfollowing user: ", err);
+        res.redirect(`/user/bookDetails/${bookId}`);
+    }
+    
 });
 
 app.get("/filterBooks", async(req, res) =>{

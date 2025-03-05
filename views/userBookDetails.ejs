@@ -24,7 +24,35 @@
         <p><strong>Review:</strong> <%= book.review %></p>
     </div>
 
- 
+    <h3>Users who have read this book:</h3>
+    <div id="usersWhoRead" class="users-list">
+        <% if (usersWhoRead && usersWhoRead.length > 0) {%>
+            <% usersWhoRead.forEach(user =>{ %>
+                <div class="user-card">
+                    <div class="user">
+                        <a href="/follower/books/<%= user.id %>">
+                            <p><strong><%= user.first_name %> <%= user.last_name %></strong></p>
+                        </a>
+                    </div>
+                    <form action="/user/follow" method="POST">
+                        <input type="hidden" name="follower_id" value="<%= currentUserId %>">
+                        <input type="hidden" name="followed_id"value="<%= user.id %>">
+                        <input type="hidden" name="book_id" value="<%= book.id %>">
+                        <button type="submit">
+                            <% if (user.followed){ %>
+                                    Unfollow
+                            <% } else { %>
+                                Follow
+                            <% } %>
+                        </button>
+                    </form>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p> No users have read this book yet.</p>
+        <% } %>
+    </div>
+
     <div class="book-details-buttons">
         <a href="/user/books">
             <button>My Books</button>
