@@ -164,12 +164,30 @@ app.get("/user/profile", async(req, res) =>{
             // Count the number of users the user is following
             const followedNumber = await db.query("SELECT COUNT(*) FROM followers WHERE follower_id = $1", [req.user.id]);
             // Get the list of followers
-            const followersList = await db.query("SELECT u.id, u.first_name, u.last_name FROM users u JOIN followers f ON u.id = f.follower_id WHERE followed_id = $1", [req.user.id]);
+            const followersList = await db.query(
+                `SELECT u.id, u.first_name, u.last_name,
+                 CASE 
+                    WHEN f2.follower_id IS NOT NULL THEN true 
+                    ELSE false 
+                 END AS followed 
+                 FROM users u
+                 JOIN followers f ON u.id = f.follower_id
+                 LEFT JOIN followers f2 ON f2.followed_id = u.id AND f2.follower_id = $1
+                 WHERE f.followed_id = $1`,
+                 [req.user.id]);
+           
             // Get the list of users the user is following
-            const followedList = await db.query("SELECT u.id, u.first_name, u.last_name FROM users u INNER JOIN followers f ON u.id = f.followed_id WHERE f.follower_id = $1", [req.user.id]);
+            const followedList = await db.query(
+                `SELECT u.id, u.first_name, u.last_name,
+                    TRUE AS followed
+                FROM users u 
+                INNER JOIN followers f ON u.id = f.followed_id 
+                WHERE f.follower_id = $1`
+                , [req.user.id]);
 
             res.render("profile.ejs", {
                 user: userDetails.rows[0],
+                currentUserId: req.user.id,
                 booksReadCount: booksReadNumber.rows[0].count,
                 followersCount: followersNumber.rows[0].count,
                 followedCount: followedNumber.rows[0].count,
@@ -325,7 +343,10 @@ app.get("/user/editBook/:id", async(req, res) =>{
 app.post("/user/follow", async(req, res) =>{
     const followerId = req.body.follower_id;
     const followedId = req.body.followed_id;
-    const bookId = req.body.book_id;
+
+    /* If the follow button is clicked from the book details page, 
+    the book_id is sent in the request, otherwise it is sent from the profile page */
+    const bookId = req.body.book_id || null;
 
     try{
         const checkFollow = await db.query(
@@ -338,12 +359,20 @@ app.post("/user/follow", async(req, res) =>{
         }else{ // If the logged in user is not following the other user -> follow button in EJS
             await db.query("INSERT INTO followers (follower_id, followed_id) VALUES ($1, $2)", [followerId, followedId]);
         }
-        res.redirect(`/user/bookDetails/${bookId}`);
+        if(bookId){
+            res.redirect(`/user/bookDetails/${bookId}`);
+        }else{
+            res.redirect("/user/profile");
+        }
+       
     }catch(err){
         console.log("Error following/unfollowing user: ", err);
-        res.redirect(`/user/bookDetails/${bookId}`);
+        if(bookId){
+            res.redirect(`/user/bookDetails/${bookId}`);
+        }else{
+            res.redirect("/user/profile");
+        }
     }
-    
 });
 
 app.get("/filterBooks", async(req, res) =>{
@@ -612,14 +641,14 @@ app.post("/user/deleteAccount", (req, res) => {
             try{
                 await db.query("DELETE FROM users WHERE id = $1", [userId])
                 console.log("User account deleted");
-                res.redirect("/"); // Redirecționăm utilizatorul la pagina principală sau la login
+                res.redirect("/"); 
             }catch(err){
                 console.log("Error deleting account: ", err);
                 res.redirect("/user/profile");
             }       
         });
     } else {
-        res.redirect("/login"); // Dacă utilizatorul nu este autentificat, îl redirecționăm la login
+        res.redirect("/login"); 
     }
 });
 

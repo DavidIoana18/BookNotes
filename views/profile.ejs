@@ -31,11 +31,22 @@
             <h3>Followers</h3>
             <ul>
                 <% followers.forEach(follower => { %>
-                    <a href ="/follower/books/<%= follower.id %>">
-                        <div class="follower-item">
-                            <%= follower.first_name %> <%= follower.last_name %>
-                        </div>
-                    </a>
+                    <div class="follower-item">
+                        <a href ="/follower/books/<%= follower.id %>">
+                                <%= follower.first_name %> <%= follower.last_name %>
+                        </a>
+                        <form action="/user/follow" method="POST">
+                            <input type="hidden" name="follower_id" value="<%= currentUserId %>">
+                            <input type="hidden" name="followed_id" value="<%= follower.id %>">
+                            <button type="submit">
+                                <% if (follower.followed) { %>
+                                    Unfollow
+                                <% } else { %>
+                                    Follow
+                                <% } %>
+                            </button>
+                        </form>
+                    </div>
                 <% }) %>
             </ul>
         </div>
@@ -47,11 +58,16 @@
             <h3> Following</h3>
             <ul>
                 <% followed.forEach(followed => { %>
-                    <a href ="/follower/books/<%= followed.id %>">
-                        <div class="following-item">
-                            <%= followed.first_name %> <%= followed.last_name %>
-                        </div>
-                    </a>
+                    <div class="following-item">
+                        <a href ="/follower/books/<%= followed.id %>">
+                                <%= followed.first_name %> <%= followed.last_name %>
+                        </a>
+                        <form action="/user/follow" method="POST">
+                            <input type="hidden" name="follower_id" value="<%= currentUserId %>">
+                            <input type="hidden" name="followed_id" value="<%= followed.id %>">
+                            <button type="submit">Unfollow</button>
+                        </form>
+                    </div>
                 <% }) %>
             </ul>
         </div>
