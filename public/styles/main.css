@@ -1280,3 +1280,239 @@ body::before {
 .footer-container p {
     margin: 0;
 }
+
+/* For devices with max-width of 1024px */
+
+@media (max-width: 1024px) {
+    .navbar-container {
+        width: 95%;
+    }
+    .navbar-brand span{
+        font-size: 20px;
+    }
+
+    .home-container {
+        padding: 20px 30px;
+        max-width: 600px;
+    }
+
+    .login-container, .register-form {
+        max-width: 350px;
+    }
+
+    .books-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .book-details {
+        max-width: 700px;
+    }
+
+    .filter-form{
+        width: 100%;
+    }
+
+    .book-cover-info {
+        align-items: center;
+    }
+
+    .book-cover, .book-cover img {
+        width: 150px;
+        height: 230px;
+    }
+
+    .book-info {
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-container {
+        width: 70%;
+    }
+
+    .followers-books-details {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .user-list {
+        width: 200px;
+    }
+
+    .modal-content {
+        width: 30%;
+    }
+}
+
+/* For devices with max-width of 768px */
+@media (max-width: 768px) {
+    .navbar-container {
+        width: 90%;
+    }
+
+    .navbar-links a{
+        font-size: 15px;
+    }
+    
+    .h1-myBooks{
+        font-size: 25px;
+    }
+
+    .home-container {
+        padding: 20px;
+        max-width: 500px;
+    }
+
+    .login-container, .register-form {
+        max-width: 300px;
+    }
+
+    .books-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .book-details {
+        max-width: 600px;
+    }
+
+    .filter-form{
+        width: 100%;
+    }
+
+    .book-cover-info {
+        align-items: center;
+    }
+
+    .book-cover, .book-cover img {
+        width: 120px;
+        height: 180px;
+    }
+
+    .book-info {
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-container {
+        width: 80%;
+    }
+
+    .followers-books-details {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .user-list {
+        width: 180px;
+    }
+
+    .modal-content {
+        width: 40%;
+    }
+}
+
+/* For devices with max-width of 480px */
+@media (max-width: 480px) {
+    .navbar-container {
+        width: 80%;
+    }
+
+    .navbar-brand span{
+        font-size: 15px;
+    }
+
+    .navbar-links a{
+        font-size: 10px;
+    }
+
+    .h1-myBooks{
+        font-size: 20px;
+    }
+
+    .filter-form label{
+        font-size: 12px;
+    }
+    .filter-form button{
+        font-size: 12px;
+    }
+
+    .titleSort, .ratingSort, .genreSort {
+        font-size: 12px;
+    }
+
+    .home-container {
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    .login-container, .register-form {
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .books-container {
+        grid-template-columns: 1fr;
+    }
+
+    .book-details {
+        min-width: 450px;
+        max-height: 700px;
+        width: 50%;
+    }
+
+    .book-review{
+        width: 100%;
+        max-width: 450px;
+        min-width: 300px;
+        padding: 10px;
+    }
+
+    .filter-form{
+        width: 100%;
+    }
+
+    .book-cover-info {
+        width:80%;
+        align-items: center;
+    }
+
+    .book-cover, .book-cover img {
+        width: 100px;
+        height: 150px;
+    }
+
+    .book-info {
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-container {
+        width: 70%;
+        min-width: 500px;
+    }
+
+    .followers-books-details {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .user-list {
+        width: 150px;
+    }
+
+    .modal-content {
+        width: 65%;
+    }
+
+    .edit-book-container{
+        min-width: 90px;
+    }
+
+    .user-info button{
+        width: 50%;
+    }
+
+    .user-card{
+        width: 50%;
+    }
+}
