@@ -91,12 +91,13 @@ body::before {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
     background-color: rgba(255, 255, 255, 0.9); 
     padding: 20px 45px 45px 45px;
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 600px;
+    max-width: 700px;
     box-sizing: border-box;
     position: relative;
     margin-top: 185px;
@@ -438,7 +439,8 @@ body::before {
     font-size: 32px;          
     font-style: italic;      
     margin: 0;   
-    margin-bottom: 10px;              
+    margin-bottom: 10px;   
+    margin-top: 10px;           
 }
 
 .no-books-container button {
@@ -728,8 +730,8 @@ body::before {
 }
 
 #genres {
-    width: 100%; /* Lățimea selectului */
-    height: 150px; /* Înălțimea pentru a vedea mai multe opțiuni */
+    width: 100%; 
+    height: 150px; 
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -868,6 +870,72 @@ body::before {
     background-color: #3a434c ;
 }
 
+
+/* --- USERS WHO READ THE SAME BOOK ---- */
+
+.users-list {
+    background-color: #f0f0f0; 
+    padding: 10px; 
+    margin-bottom: 15px;
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    display: flex;
+    flex-direction: row;
+    width: 98%;
+    gap: 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.user {
+    margin-bottom: 10px; 
+}
+
+.user p {
+    margin: 0; 
+}
+
+.book-details h3{
+    margin-bottom: 0;
+}
+
+.user-card {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    flex: 0 0 auto;
+    background-color: #ffffff; 
+    padding: 10px; 
+    margin-bottom: 10px; 
+    border-radius: 5px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    min-width: 120px;
+    width: 25%
+}
+
+.user a{
+    text-decoration: none;
+    color: black;
+}
+.user a:hover{
+    color: #5C7285;
+}
+
+.user-card button {
+    background-color: #5C7285; 
+    color: #ffffff; 
+    border: none; 
+    padding: 10px 15px;
+    border-radius: 5px; 
+    cursor: pointer; 
+}
+
+.user-card button:hover {
+    background-color: #3a434c; 
+}
+
+
 /* ------------ EDIT BOOK PAGE ------- */
 .editBook{
     text-align: center;
@@ -1001,11 +1069,13 @@ body::before {
     flex-direction: column;
     align-items: center;
     min-width: 700px;
-    width: 60%;
+    width: 50%;
     margin: auto;
     padding: 20px;
     text-align: center;
     background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    margin-top: 120px;
 }
 
 .profile-details {
@@ -1083,7 +1153,6 @@ body::before {
     color: #3a434c;
 }
 
-
 .modal {
     display: none; 
     position: fixed;
@@ -1115,14 +1184,41 @@ body::before {
 }
 
 .follower-item, .following-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     padding: 10px;
     border-bottom: 1px solid #ddd;
     cursor: pointer;
     color:#5C7285;
+    margin-right: 30px;
+    width: 90%;
 }
 
-.follower-item:hover, .following-item:hover {
-    background-color: #f1f1f1;
+.follower-item button,
+.following-item button {
+    background-color: #5C7285;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.follower-item button:hover,
+.following-item button:hover {
+    background-color: #3a434c;
+}
+
+.follower-item a,
+.following-item a {
+    text-decoration: none;
+    color: #5C7285;
+}
+
+.follower-item a:hover,
+.following-item a:hover {
+    color: #3a434c;
 }
 
 .modal-content a{
