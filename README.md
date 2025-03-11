@@ -84,7 +84,7 @@ BookHub is a web application designed for book enthusiasts to manage their readi
 
 # Responsive Design
 
-✔ Optimized for desktop, tablet and mobile (media queries for max-width: 1024px, max-width: 768px and max-width: 480px)
+✔ The layout adapts to different screen sizes with media queries for common breakpoints (1024px, 768px, 480px)
 
 # Database Schema
 
