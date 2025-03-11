@@ -4,7 +4,7 @@
 
 BookHub is a web application designed for book enthusiasts to manage their reading list, connect with other users and explore new books. Users can register, log in, add books they have read, edit or delete them, view other users' profiles and follow or unfollow other users. The application **supports both local authentication and Google OAuth** for a seamless login experience.
 
-#### BookNotes provides an engaging way for book lovers to track their reading progress, explore books from other users, and build a personalized reading community! 
+#### BookNotes provides an engaging way for book lovers to track their reading progress, explore books from other users and build a personalized reading community! 
 
 # 🛠 Tech Stack
 
@@ -14,7 +14,7 @@ BookHub is a web application designed for book enthusiasts to manage their readi
 
 - Express.js - Web framework for handling routes and middleware
 
-- PostgreSQL - Relational database for storing user and book data
+- PostgreSQL - Relational database for storing users, followers and books data
 
 - pg (node-postgres) - PostgreSQL client for Node.js
 
@@ -84,7 +84,7 @@ BookHub is a web application designed for book enthusiasts to manage their readi
 
 # Responsive Design
 
-✔ Optimized for desktop, tablet, and mobile (media queries for max-width: 1024px, max-width: 768px, and max-width: 480px)
+✔ Optimized for desktop, tablet and mobile (media queries for max-width: 1024px, max-width: 768px and max-width: 480px)
 
 # Database Schema
 
