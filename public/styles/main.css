@@ -299,6 +299,9 @@ body::before {
 .google-sign-in {
     margin-top: 20px;
 }
+.google-sign-in a{
+    text-decoration: none;;
+}
 
 .google-btn {
     width: 100%;
